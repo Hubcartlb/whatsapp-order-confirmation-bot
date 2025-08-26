@@ -1,69 +1,44 @@
-const { Client, Location, Poll, List, Buttons, LocalAuth } = require('./index');
+const { Client, LocalAuth } = require('whatsapp-web.js');
 const express = require('express');
-const bodyParser = require('body-parser');
+const app = express();
 
-// -------------------- WhatsApp Client --------------------
+app.use(express.json());
+
+// 1️⃣ WhatsApp client
 const client = new Client({
-    authStrategy: new LocalAuth(),
-    puppeteer: { 
-        headless: true,
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-accelerated-2d-canvas',
-            '--no-first-run',
-            '--no-zygote',
-            '--single-process',
-            '--disable-gpu'
-        ]
-    }
+    authStrategy: new LocalAuth({ clientId: "business_phone" }),
+    puppeteer: { headless: true } // headless for Render
 });
 
 client.initialize();
 
-// ----- WhatsApp Events -----
-client.on('loading_screen', (percent, message) => console.log('LOADING SCREEN', percent, message));
-client.on('qr', qr => console.log('QR RECEIVED', qr));
-client.on('authenticated', () => console.log('AUTHENTICATED'));
-client.on('auth_failure', msg => console.error('AUTHENTICATION FAILURE', msg));
-client.on('ready', async () => console.log('READY'));
-client.on('message', async msg => {
-    // Your full message logic from bot.js here
-    console.log('MESSAGE RECEIVED', msg.body);
-    if (msg.body === '!ping') msg.reply('pong');
-    // ... other commands ...
+client.on('ready', () => {
+    console.log('WhatsApp client ready!');
 });
 
-// Add other client.on events from your bot.js as needed
-// group_join, group_leave, message_create, message_revoke_everyone, etc.
+// 2️⃣ Function to send confirmation
+async function sendConfirmation(to, orderId) {
+    const number = to.includes('@c.us') ? to : `${to}@c.us`;
+    const message = `Hi! Your order #${orderId} has been received. Thank you for shopping with us!`;
+    await client.sendMessage(number, message);
+}
 
-// -------------------- Express Webhook --------------------
-const app = express();
-app.use(bodyParser.json());
-
-app.post('/webhook', async (req, res) => {
+// 3️⃣ WooCommerce webhook endpoint
+app.post('/new-order', async (req, res) => {
     try {
-        const { id, customer_name, phone } = req.body;
+        const order = req.body;
+        const customerPhone = order.billing.phone; // number in format e.g. 96170100100
+        const orderId = order.id;
 
-        if (!id || !customer_name || !phone) {
-            return res.status(400).send('Missing order data.');
-        }
+        await sendConfirmation(customerPhone, orderId);
 
-        // WhatsApp format: country code + number + '@c.us'
-        const waNumber = phone.replace(/\D/g, '') + '@c.us';
-
-        await client.sendMessage(
-            waNumber,
-            `Hello ${customer_name}, thank you for your order #${id}. Please reply YES to confirm or NO to cancel.`
-        );
-
-        res.status(200).send('WhatsApp message sent.');
+        res.status(200).send('WhatsApp message sent');
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error sending WhatsApp message.');
+        res.status(500).send('Error sending message');
     }
 });
 
+// 4️⃣ Start Express server (Render requires PORT env)
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
