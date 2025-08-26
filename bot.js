@@ -28,11 +28,11 @@ const client = new Client({
         '--disable-gpu'
     ]
     },
-    // pairWithPhoneNumber: {
-    //     phoneNumber: '96170100100' // Pair with phone number (format: <COUNTRY_CODE><PHONE_NUMBER>)
-    //     showNotification: true,
-    //     intervalMs: 180000 // Time to renew pairing code in milliseconds, defaults to 3 minutes
-    // }
+     pairWithPhoneNumber: {
+         phoneNumber: '96181663279' // Pair with phone number (format: <COUNTRY_CODE><PHONE_NUMBER>)
+         showNotification: true,
+         intervalMs: 180000 // Time to renew pairing code in milliseconds, defaults to 3 minutes
+     }
 });
 
 // client initialize does not finish at ready now.
