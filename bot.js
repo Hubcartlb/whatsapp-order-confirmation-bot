@@ -16,7 +16,7 @@ const client = new Client({
     // browserName: 'Firefox',
     puppeteer: { 
         // args: ['--proxy-server=proxy-server-that-requires-authentication.example.com'],
-        headless: false,
+        headless: true,
     },
     // pairWithPhoneNumber: {
     //     phoneNumber: '96170100100' // Pair with phone number (format: <COUNTRY_CODE><PHONE_NUMBER>)
