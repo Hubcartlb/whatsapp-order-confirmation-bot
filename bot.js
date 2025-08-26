@@ -14,26 +14,26 @@ const client = new Client({
      * If another value is provided, the browser icon in 'linked devices' section will be gray.
      */
     // browserName: 'Firefox',
-    puppeteer: { 
-        // args: ['--proxy-server=proxy-server-that-requires-authentication.example.com'],
+   { 
         headless: true,
-         args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--no-first-run',
-        '--no-zygote',
-        '--single-process',
-        '--disable-gpu'
-    ]
-    },
-     pairWithPhoneNumber: {
-         phoneNumber: '96181663279', // Pair with phone number (format: <COUNTRY_CODE><PHONE_NUMBER>)
-         showNotification: true,
-         intervalMs: 180000 // Time to renew pairing code in milliseconds, defaults to 3 minutes
-     }
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-zygote',
+            '--single-process',
+            '--disable-gpu'
+        ]
+    }
 });
+     //pairWithPhoneNumber: {
+      //   phoneNumber: '96181663279', // Pair with phone number (format: <COUNTRY_CODE><PHONE_NUMBER>)
+       //  showNotification: true,
+        // intervalMs: 180000 // Time to renew pairing code in milliseconds, defaults to 3 minutes
+    // }
+//});
 
 // client initialize does not finish at ready now.
 client.initialize();
