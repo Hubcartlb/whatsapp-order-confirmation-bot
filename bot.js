@@ -26,15 +26,13 @@ const client = new Client({
             '--single-process',
             '--disable-gpu'
         ]
+    },
+ pairWithPhoneNumber: {
+        phoneNumber: '96181663279', 
+        showNotification: false, // headless cannot show notifications
+        intervalMs: 180000
     }
-//});
-    pairWithPhoneNumber: {
-         phoneNumber: '96181663279', // Pair with phone number (format: <COUNTRY_CODE><PHONE_NUMBER>)
-         showNotification: true,
-         intervalMs: 180000 // Time to renew pairing code in milliseconds, defaults to 3 minutes
-     }
 });
-
 // client initialize does not finish at ready now.
 client.initialize();
 
